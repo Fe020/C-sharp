@@ -1,0 +1,54 @@
+using System;
+using System.Threading;
+using System.Windows.Forms;
+
+namespace ThreadExample
+{
+    public partial class MainForm : Form
+    {
+        private Thread taskThread;
+        private bool isRunning;
+
+        public MainForm()
+        {
+            InitializeComponent();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            isRunning = true;
+            taskThread = new Thread(UpdateLabelTime); // Create a new thread and pass the UpdateLabelTime method as the thread's entry point
+            taskThread.Start(); // Start the thread
+        }
+
+        private void UpdateLabelTime()
+        {
+            while (isRunning)
+            {
+                string currentTime = DateTime.Now.ToString("hh:mm:ss tt"); // Get the current time
+                UpdateLabelSafe(currentTime); // Call the UpdateLabelSafe method to update the label control safely on the UI thread
+                Thread.Sleep(1000); // Pause the thread for 1 second
+            }
+        }
+
+        private void UpdateLabelSafe(string text)
+        {
+            if (InvokeRequired)
+            {
+                // If called from a different thread, invoke the method on the UI thread
+                Invoke(new Action<string>(UpdateLabelSafe), text);
+            }
+            else
+            {
+                // Update the label text
+                lblTime.Text = text;
+            }
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            isRunning = false; // Stop the task thread when the form is closing
+            taskThread.Join(); // Wait for the task thread to complete before closing the form
+        }
+    }
+}

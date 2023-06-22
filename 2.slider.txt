@@ -1,0 +1,23 @@
+using System;
+using System.Windows.Forms;
+
+namespace SliderExample
+{
+    public partial class MainForm : Form
+    {
+        public MainForm()
+        {
+            InitializeComponent();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            sldValue.ValueChanged += UpdateLabelValue; // Attach the event handler to the ValueChanged event of the slider control
+        }
+
+        private void UpdateLabelValue(object sender, EventArgs e)
+        {
+            lblValue.Text = sldValue.Value.ToString(); // Update the label text with the new value of the slider control
+        }
+    }
+}
