@@ -1,54 +1,102 @@
 using System;
-using System.Threading;
-using System.Windows.Forms;
+using System.Collections.Generic;
 
-namespace ThreadExample
+public class Contact
 {
-    public partial class MainForm : Form
+    public string Name { get; set; }
+    public string PhoneNumber { get; set; }
+}
+
+public class TelephoneDirectory
+{
+    private List<Contact> contacts;
+
+    public TelephoneDirectory()
     {
-        private Thread taskThread;
-        private bool isRunning;
+        contacts = new List<Contact>();
+    }
 
-        public MainForm()
+    public void AddContact(string name, string phoneNumber)
+    {
+        Contact contact = new Contact
         {
-            InitializeComponent();
+            Name = name,
+            PhoneNumber = phoneNumber
+        };
+        contacts.Add(contact);
+    }
+
+    public void RemoveContact(string name)
+    {
+        Contact contactToRemove = contacts.Find(contact => contact.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        if (contactToRemove != null)
+        {
+            contacts.Remove(contactToRemove);
         }
+    }
 
-        private void MainForm_Load(object sender, EventArgs e)
+    public void PrintDirectory()
+    {
+        Console.WriteLine("Telephone Directory");
+        foreach (var contact in contacts)
         {
-            isRunning = true;
-            taskThread = new Thread(UpdateLabelTime); // Create a new thread and pass the UpdateLabelTime method as the thread's entry point
-            taskThread.Start(); // Start the thread
+            Console.WriteLine($"Name: {contact.Name}\tPhone Number: {contact.PhoneNumber}");
         }
+    }
+}
 
-        private void UpdateLabelTime()
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        TelephoneDirectory directory = new TelephoneDirectory();
+        while (true)
         {
-            while (isRunning)
+            Console.WriteLine("Enter an option:");
+            Console.WriteLine("1. Add a contact");
+            Console.WriteLine("2. Remove a contact");
+            Console.WriteLine("3. Print directory");
+            Console.WriteLine("4. Exit");
+
+            if (!int.TryParse(Console.ReadLine(), out int option))
             {
-                string currentTime = DateTime.Now.ToString("hh:mm:ss tt"); // Get the current time
-                UpdateLabelSafe(currentTime); // Call the UpdateLabelSafe method to update the label control safely on the UI thread
-                Thread.Sleep(1000); // Pause the thread for 1 second
+                Console.WriteLine("Invalid option. Please enter a number.");
+                Console.WriteLine();
+                continue;
             }
-        }
 
-        private void UpdateLabelSafe(string text)
-        {
-            if (InvokeRequired)
+            switch (option)
             {
-                // If called from a different thread, invoke the method on the UI thread
-                Invoke(new Action<string>(UpdateLabelSafe), text);
-            }
-            else
-            {
-                // Update the label text
-                lblTime.Text = text;
-            }
-        }
+                case 1:
+                    Console.WriteLine("Enter the contact name:");
+                    string name = Console.ReadLine();
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            isRunning = false; // Stop the task thread when the form is closing
-            taskThread.Join(); // Wait for the task thread to complete before closing the form
+                    Console.WriteLine("Enter the phone number:");
+                    string phoneNumber = Console.ReadLine();
+
+                    directory.AddContact(name, phoneNumber);
+                    Console.WriteLine("Contact added successfully.");
+                    Console.WriteLine();
+                    break;
+                case 2:
+                    Console.WriteLine("Enter the contact name to remove:");
+                    string contactName = Console.ReadLine();
+
+                    directory.RemoveContact(contactName);
+                    Console.WriteLine("Contact removed successfully.");
+                    Console.WriteLine();
+                    break;
+                case 3:
+                    directory.PrintDirectory();
+                    Console.WriteLine();
+                    break;
+                case 4:
+                    return;
+                default:
+                    Console.WriteLine("Invalid option. Please enter a valid option.");
+                    Console.WriteLine();
+                    break;
+            }
         }
     }
 }

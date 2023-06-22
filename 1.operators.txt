@@ -1,54 +1,70 @@
 using System;
-using System.Threading;
 using System.Windows.Forms;
 
-namespace ThreadExample
+namespace calcu
 {
-    public partial class MainForm : Form
+    public partial class Form1 : Form
     {
-        private Thread taskThread;
-        private bool isRunning;
+        string operationPerformed = "";
+        bool isOperationPerformed = false;
+        double resultValue = 0;
 
-        public MainForm()
+        public Form1()
         {
             InitializeComponent();
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private void NumberButtonClick(object sender, EventArgs e)
         {
-            isRunning = true;
-            taskThread = new Thread(UpdateLabelTime); // Create a new thread and pass the UpdateLabelTime method as the thread's entry point
-            taskThread.Start(); // Start the thread
+            if (textBox.Text == "0" || isOperationPerformed)
+                textBox.Clear();
+
+            isOperationPerformed = false;
+
+            Button button = (Button)sender;
+            textBox.Text += button.Text;
         }
 
-        private void UpdateLabelTime()
+        private void OperatorButtonClick(object sender, EventArgs e)
         {
-            while (isRunning)
-            {
-                string currentTime = DateTime.Now.ToString("hh:mm:ss tt"); // Get the current time
-                UpdateLabelSafe(currentTime); // Call the UpdateLabelSafe method to update the label control safely on the UI thread
-                Thread.Sleep(1000); // Pause the thread for 1 second
-            }
+            Button button = (Button)sender;
+            operationPerformed = button.Text;
+            resultValue = double.Parse(textBox.Text);
+            isOperationPerformed = true;
         }
 
-        private void UpdateLabelSafe(string text)
+        private void EqualsButtonClick(object sender, EventArgs e)
         {
-            if (InvokeRequired)
+            double currentValue = double.Parse(textBox.Text);
+
+            switch (operationPerformed)
             {
-                // If called from a different thread, invoke the method on the UI thread
-                Invoke(new Action<string>(UpdateLabelSafe), text);
+                case "+":
+                    textBox.Text = (resultValue + currentValue).ToString();
+                    break;
+                case "-":
+                    textBox.Text = (resultValue - currentValue).ToString();
+                    break;
+                case "*":
+                    textBox.Text = (resultValue * currentValue).ToString();
+                    break;
+                case "/":
+                    if (currentValue != 0)
+                        textBox.Text = (resultValue / currentValue).ToString();
+                    else
+                        textBox.Text = "Error: Division by zero";
+                    break;
             }
-            else
-            {
-                // Update the label text
-                lblTime.Text = text;
-            }
+
+            resultValue = double.Parse(textBox.Text);
+            isOperationPerformed = false;
         }
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void ClearButtonClick(object sender, EventArgs e)
         {
-            isRunning = false; // Stop the task thread when the form is closing
-            taskThread.Join(); // Wait for the task thread to complete before closing the form
+            operationPerformed = "";
+            resultValue = 0;
+            textBox.Text = "0";
         }
     }
 }
