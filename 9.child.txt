@@ -1,0 +1,59 @@
+9. Create a Windows Form Text Editor application which allows the user to open and edit 
+multiple text files within the same application window. Each text file is displayed in its ownchild 
+form, which can be resized, maximized, minimized, and closed independently of the 
+other child forms.
+
+
+
+using System;
+using System.Windows.Forms;
+
+namespace lab_9
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        RichTextBox richTextBox;
+        Form childForm;
+        string fileName1;
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Rich text files (.rtf)|.rtf";
+            openFileDialog.ShowDialog();
+            fileName1 = openFileDialog.FileName;
+            label1.Text = fileName1;
+
+            childForm = new Form();
+            richTextBox = new RichTextBox();
+            childForm.Controls.Add(richTextBox);
+
+            childForm.Show();
+            richTextBox.Size = childForm.ClientSize;
+
+            childForm.Resize += new EventHandler(childForm_Resize);
+            button2.Enabled = true;
+            button3.Enabled = true;
+        }
+
+        private void childForm_Resize(object sender, EventArgs e)
+        {
+            richTextBox.Size = childForm.ClientSize;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            richTextBox.ReadOnly = !richTextBox.ReadOnly;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            richTextBox.SaveFile(fileName1);
+        }
+    }
+}

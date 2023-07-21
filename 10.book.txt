@@ -1,0 +1,94 @@
+10. Design and develop a bookstore application that allows to add new books, update existing 
+books, and view the list of books in the inventory
+
+
+
+using System;
+using System.Collections.Generic;
+namespace BookstoreApplication
+{
+    class Book
+    {
+        public string Title { get;set; }
+        public string Author { get;set; }
+    }
+    class Program
+    {
+        static List<Book> books = new List<Book>();
+        static void Main(string[] args)
+        {
+            bool exit = false;
+            while (!exit)
+            {
+                Console.WriteLine("Bookstore Application");
+                Console.WriteLine("1.Add Book");
+                Console.WriteLine("2.Update Book");
+                Console.WriteLine("3.view book inventory");
+                Console.WriteLine("4.Exit");
+                Console.WriteLine("enter your choice");
+                string choice= Console.ReadLine();
+                switch (choice)
+                {
+                    case "1":
+                        AddBook();
+                        break;
+
+                    case "2":
+                        UpdateBook();
+                        break;
+
+                    case "3":
+                        ViewInventory();
+                        break;
+
+                    case "4":
+                        exit = true;
+                        break;
+                    default: Console.WriteLine("invalid choice.please try again");
+                        break;
+                }
+                Console.WriteLine();
+            }
+        }
+        static void AddBook()
+        {
+            Console.WriteLine("Add book");
+            Console.WriteLine("enter the title");
+            string title = Console.ReadLine();
+            Console.Write("enter the author");
+            string author = Console.ReadLine();
+            Book book=new Book { Title = title, Author = author };
+            books.Add(book);
+            Console.WriteLine("Book added successfully");
+        }
+        static void UpdateBook()
+        {
+            Console.WriteLine("update book");
+            Console.WriteLine("enter the index of the book to update");
+            if(int.TryParse(Console.ReadLine(),out int index)&& index>=0 &&index < books.Count)
+            {
+                Console.WriteLine("enter the new title");
+                string newTitle=Console.ReadLine();
+                Console.Write("enter the new author");
+                string newAuthor=Console.ReadLine();
+                books[index].Title = newTitle;
+                books[index].Author = newAuthor;
+                Console.WriteLine("Book updated successfully");
+            }
+            else { Console.WriteLine("invalid index"); }
+        }
+        static void ViewInventory()
+        {
+            Console.WriteLine("book inventory");
+            if (books.Count == 0)
+            {
+                Console.WriteLine("no book is inventory");
+
+            }
+            else { for(int i = 0;i< books.Count; i++)
+                {
+                    Console.WriteLine($"Index:{i},Title:{books[i].Title},Author:{books[i].Author}");
+                } }
+        }
+    }
+}

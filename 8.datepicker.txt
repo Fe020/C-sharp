@@ -1,0 +1,53 @@
+
+8. Create a Windows Form Meeting scheduler application which helps the user to schedule a 
+meeting using a Month Calendar control and two DateTimePicker controls. The user selects a 
+date on the calendar and sets the start and end times for the meeting using the 
+DateTimePicker controls. The program checks to make sure the meeting does not conflict with 
+any previously scheduled meetings before adding it to a list view control.
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace practice_8
+{
+    public partial class Form1 : Form
+    {
+        private ListView listView;
+        public Form1()
+        {
+            InitializeComponent();
+            listView = this.listView1;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            DateTime startDate = monthCalendar1.SelectionStart;
+            DateTime startTime = dateTimePicker1.Value;
+            DateTime endTime = dateTimePicker2.Value;
+
+            foreach (ListViewItem itemList in listView.Items)
+            {
+                DateTime meetingDate = DateTime.Parse(itemList.SubItems[0].Text);
+                DateTime meetingStartTime = DateTime.Parse(itemList.SubItems[1].Text);
+                DateTime meetingEndTime = DateTime.Parse(itemList.SubItems[2].Text);
+
+                if (startDate == meetingDate && startTime >= meetingStartTime && endTime <= meetingEndTime)
+                {
+                    MessageBox.Show("There is a conflict with a previous meeting", "Schedule Conflict", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            listView.Items.Add(new ListViewItem(new string[] { startDate.ToString(), startTime.ToString(), endTime.ToString() }));
+        }
+    }
+}

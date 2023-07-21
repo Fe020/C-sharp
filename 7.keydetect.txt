@@ -1,0 +1,51 @@
+7. Write a Program to detect and display the pressed key , to capture arrow key press events , 
+Change text color based on key presses.
+
+
+
+
+namespace lab7
+{
+    public partial class Form1 : Form
+    {
+        private TextBox textBox;
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            textBox.Text = $"Key Pressed: {e.KeyCode}";
+
+            // Change the text color based on the key press
+            if (e.KeyCode == Keys.Left)
+                textBox.ForeColor = Color.Red;
+            else if (e.KeyCode == Keys.Right)
+                textBox.ForeColor = Color.Green;
+            else if (e.KeyCode == Keys.Up)
+                textBox.ForeColor = Color.Blue;
+            else if (e.KeyCode == Keys.Down)
+                textBox.ForeColor = Color.Orange;
+        }
+
+        private void TextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            textBox.ForeColor = Color.Black;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            textBox = new TextBox();
+            textBox.Location = new Point(50, 50);
+            textBox.Size = new Size(200, 20);
+
+            // Attach event handlers
+            textBox.KeyDown += TextBox_KeyDown;
+            textBox.KeyUp += TextBox_KeyUp;
+
+            // Add the TextBox control to the form
+            Controls.Add(textBox);
+        }
+    }
+}

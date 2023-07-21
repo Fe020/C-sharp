@@ -1,0 +1,38 @@
+6. Create a Windows Forms application that changes the color of a Textbox control when the 
+mouse pointer enters or leaves the control. Implement event-based approaches to handle the
+Mouse Enter and Mouse Leave events and change the color of the Textbox control 
+accordingly.
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace practice_6
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void textBox1_MouseEnter(object sender, EventArgs e)
+        {
+            textBox1.BackColor = Color.LightBlue;
+        }
+
+        private void textBox1_MouseLeave(object sender, EventArgs e)
+        {
+            textBox1.BackColor=SystemColors.Window;
+        }
+    }
+}

@@ -1,0 +1,48 @@
+5. Create a Windows Forms application that performs a calculation based on user input. 
+Implement exception handling to handle the case where the input data is not valid, such as a 
+negative number or a non-numeric value and display an error message in a Label control.
+
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace basic_calculation
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                double num1 = double.Parse(textBox1.Text);
+                double num2 = double.Parse(textBox2.Text);
+                double result = num1 / num2;
+                label1.Text = result.ToString();
+            }
+            catch(FormatException) {
+                label1.Text = "invalid input";
+            }
+            catch(OverflowException)
+            {
+                label1.Text = "invalid .input too small";
+
+            }
+            catch(Exception ex)
+            {
+                label1.Text = $"an error occured:{ex.Message}";
+            }
+        }
+    }
+}
